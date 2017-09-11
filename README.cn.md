@@ -1,5 +1,5 @@
 # wx-voice
-转换 腾讯App（微信、微信小程序、QQ）或 Silk 编码的音频 至其他音乐格式如 mp3 及 m4a
+转换 腾讯App（微信、微信小程序、QQ）或 Silk 编码的音频 至其他音乐格式如 mp3 及 m4a  
 [English Readme](README.md)
 
 
@@ -38,6 +38,7 @@ voice.decode(
 
 ### new WxVoice([tempFolder, [ffmpegPath]])
 初始化 wxVoice
+
 | 参数 | 说明 |
 | ---------- | ----------- |
 | tempFolder | 自定义临时文件文件夹，默认为系统temp |
@@ -92,6 +93,7 @@ voice.encode("output.mp3", (dur) => console.log(dur));
 
 
 ### Installing build tools
+
 | 作业系统 | 指令 |
 | ------- | ---- |
 | Ubuntu  | `sudo apt-get install build-essential` |

@@ -38,6 +38,7 @@ voice.decode(
 
 ### new WxVoice([tempFolder, [ffmpegPath]])
 Initialize wxVoice object
+
 | Parameter  | Description |
 | ---------- | ----------- |
 | tempFolder | Folder of temporary files, default to system temporary   |
@@ -92,6 +93,7 @@ Tested on `silk`, `webm`, `mp3`, `m4a`, `wav`
 
 
 ### Installing build tools
+
 | OS     | Command |
 | ------ | ------- |
 | Ubuntu | `sudo apt-get install build-essential` |

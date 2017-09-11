@@ -1,6 +1,6 @@
 {
   "name": "wx-voice",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Convert audio files between Tencent apps (Weixin / Wechat, QQ) and Silk codec with other general format such as MP3 and M4A",
   "keywords": ["wechat", "weixin", "mini", "program", "silk", "slk", "convert", "converter", "decode", "decoder", "encode", "encoder"],
   "main": "index.js",
