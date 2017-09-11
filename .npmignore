@@ -1,0 +1,15 @@
+# Test
+test/
+
+# Silk Binaries
+silk/decoder
+silk/encoder
+silk/libSKP_SILK_SDK.a
+silk/src/*.o
+
+# Default
+.DS_Store
+Thumbs.db
+
+.npm
+node_modules/
