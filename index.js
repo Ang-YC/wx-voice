@@ -115,16 +115,17 @@ class WxVoice extends EventEmitter {
 
         // Check if file exists
         if (!fs.existsSync(input)) {
+            this.emit("error", "Error: ENOENT: no such file or directory, open '" + input + "'");
             return callback();
         }
 
 
-        if (options.format == "silk") {
+        if (options.format == "silk" || options.format == "silk_amr") {
 
             tempFile = this._getTempFile(input + ".pcm");
             this._convert(false, true, input, tempFile, options, (tempOutput) => {
                 if (tempOutput) {
-                    this._encodeSilk(tempOutput, output, (res) => {
+                    this._encodeSilk(tempOutput, output, options.format, (res) => {
                         this._deleteTempFile(tempOutput);
                         callback(res);
                     });
@@ -149,7 +150,8 @@ class WxVoice extends EventEmitter {
             });
 
         } else {
-            return this.emit("error", new Error(options.format + " is not a valid encode format, only webm and silk allowed"));
+            this.emit("error", new Error(options.format + " is not a valid encode format, only silk, silk_amr and webm allowed"));
+            return callback();
         }
     }
 
@@ -184,7 +186,7 @@ class WxVoice extends EventEmitter {
         if (rawInput) {
             ffmpeg = ffmpeg.inputFormat("s16le").inputOptions(["-ar 24000", "-ac 1"]);
         } else if (rawOutput) {
-            if (format == "silk") {
+            if (format == "silk" || format == "silk_amr") {
                 format = "s16le";
                 ffmpeg = ffmpeg.outputOptions(["-ar 24000", "-ac 1"]);
             } else if (format == "webm") {
@@ -243,8 +245,9 @@ class WxVoice extends EventEmitter {
     }
 
 
-    _encodeSilk(input, output, callback) {
-        var encoder = spawn(this._getSilkSDK("encoder"), [input, output, "-tencent"]);
+    _encodeSilk(input, output, type, callback) {
+        var flag    = (type == "silk_amr" ? "-tencent_amr" : "-tencent"),
+            encoder = spawn(this._getSilkSDK("encoder"), [input, output, flag]);
 
         // Allow it to output
         encoder.stdout.on('data', (data) => { });
@@ -407,7 +410,9 @@ function fileType(input) {
 
     if (check([0x23, 0x21, 0x53, 0x49, 0x4C, 0x4B, 0x0A]) ||                   // Skype V1: #!SILK\n  (https://tools.ietf.org/html/draft-spittka-silk-payload-format-00)
         check([0x23, 0x21, 0x53, 0x49, 0x4C, 0x4B, 0x5F, 0x56, 0x33]) ||       // Skype V3: #!SILK_V3
-        check([0x02, 0x23, 0x21, 0x53, 0x49, 0x4C, 0x4B, 0x5F, 0x56, 0x33])) { // Tencent variation: .#!SILK_V3
+        check([0x02, 0x23, 0x21, 0x53, 0x49, 0x4C, 0x4B, 0x5F, 0x56, 0x33]) || // Tencent variation: .#!SILK_V3
+        check([0x23, 0x21, 0x41, 0x4D, 0x52, 0x0A, 0x02, 0x23, 0x21, 0x53, 0x49, 0x4C, 0x4B, 0x5F, 0x56, 0x33])) { // Tencent AMR variation: #!AMR\n.#!SILK_V3
+
         return {
             ext: 'sil',
             mime: 'audio/silk'

@@ -1,11 +1,13 @@
 # Test
 test/
+!silk/test/
 
 # Silk Binaries
 silk/decoder
 silk/encoder
 silk/libSKP_SILK_SDK.a
 silk/src/*.o
+silk/test/*.o
 
 # Default
 .DS_Store

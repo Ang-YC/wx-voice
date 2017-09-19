@@ -1,4 +1,4 @@
-# wx-voice
+# wx-voice [![npm](https://img.shields.io/npm/v/wx-voice.svg?colorB=4c1)](https://www.npmjs.com/package/wx-voice)
 转换 腾讯App（微信、微信小程序、QQ）或 Silk 编码的音频 至其他音乐格式如 mp3 及 m4a  
 [English Readme](README.md)
 
@@ -16,7 +16,16 @@ $ wx-voice compile
 - **Build tools**: [安装 Build tools](#installing-build-tools)
 
 
-## 使用方法
+## CLI 使用方法
+`wx-voice <de/encode> <input> <output> <output_format>`
+```
+# 例子：
+$ wx-voice decode input.silk output.mp3 mp3
+$ wx-voice encode input.mp3 output.silk silk
+```
+
+
+## API 使用方法
 ```js
 // 初始化
 const WxVoice = require('wx-voice');
@@ -78,8 +87,8 @@ voice.encode("output.mp3", (dur) => console.log(dur));
 ```
 
 
-## 测试
-已测试的格式为：`silk`, `webm`, `mp3`, `m4a`, `wav`
+## 支持格式
+已测试的格式为：`silk`, `silk_amr`, `webm`, `mp3`, `m4a`, `wav`
 
 
 ## Todo

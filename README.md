@@ -1,4 +1,4 @@
-# wx-voice
+# wx-voice [![npm](https://img.shields.io/npm/v/wx-voice.svg?colorB=4c1)](https://www.npmjs.com/package/wx-voice)
 Convert audio files between Tencent apps (Weixin / Wechat, QQ) and Silk codec with other general formats such as MP3 and M4A  
 [中文版](README.cn.md)
 
@@ -16,7 +16,16 @@ $ wx-voice compile
 - **Build tools**: [Installing build tools](#installing-build-tools)
 
 
-## Usage
+## CLI Usage
+`wx-voice <de/encode> <input> <output> <output_format>`
+```
+# Example:
+$ wx-voice decode input.silk output.mp3 mp3
+$ wx-voice encode input.mp3 output.silk silk
+```
+
+
+## API Usage
 ```js
 // Initialize
 const WxVoice = require('wx-voice');
@@ -78,8 +87,8 @@ voice.encode("output.mp3", (dur) => console.log(dur));
 ```
 
 
-## Tests
-Tested on `silk`, `webm`, `mp3`, `m4a`, `wav`
+## File types
+Tested on `silk`, `silk_amr`, `webm`, `mp3`, `m4a`, `wav`
 
 
 ## Todo
