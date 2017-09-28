@@ -36,7 +36,7 @@ class WxVoice extends EventEmitter {
 
 
     decode(input, output, options, callback) {
-        var buffer,
+        var ext, buffer,
             fileFormat;
 
         // Make it into absolute path
@@ -50,7 +50,12 @@ class WxVoice extends EventEmitter {
 
         // Set format as extension if undefined
         if (options.format === undefined) {
-            options.format = path.extname(output);
+            ext = path.extname(output);
+
+            if (ext[0] == ".")
+                ext = ext.substr(1);
+
+            options.format = ext;
         }
 
         // Callback after decode is done
@@ -94,7 +99,7 @@ class WxVoice extends EventEmitter {
 
 
     encode(input, output, options, callback) {
-        var tempFile;
+        var ext, tempFile;
 
         // Make it into absolute path
         input  = path.resolve(input);
@@ -107,7 +112,12 @@ class WxVoice extends EventEmitter {
 
         // Set format as extension if undefined
         if (options.format === undefined) {
-            options.format = path.extname(output);
+            ext = path.extname(output);
+
+            if (ext[0] == ".")
+                ext = ext.substr(1);
+
+            options.format = ext;
         }
 
         // Callback after encode is done

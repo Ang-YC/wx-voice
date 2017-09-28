@@ -13,11 +13,21 @@
 const fs = require('fs');
 const path = require('path');
 const exec = require('child_process').exec;
+const cmdArgs = require('command-line-args');
 const Spinner = require('cli-spinner').Spinner;
 const WxVoice = require('./index.js');
 
-var args   = process.argv,
-    binSdk = path.resolve(__dirname, "silk");
+const args = cmdArgs([
+    { name: "command", defaultOption: true, type: String },
+    { name: "input",  alias: "i", type: String },
+    { name: "output", alias: "o", type: String },
+    { name: "format", alias: "f", type: String },
+    { name: "bitrate",   type: Number },
+    { name: "frequency", type: Number },
+    { name: "channels",  type: Number }
+]);
+
+var binSdk = path.resolve(__dirname, "silk");
     sdk    = path.resolve(process.cwd(), "node_modules", "wx-voice", "silk");
 
 var cmdName = "[wx-voice]  ",
@@ -25,43 +35,45 @@ var cmdName = "[wx-voice]  ",
 
 
 
-if (args.length <= 2) {
-    help();
-} else {
-    switch (args[2]) {
-        case "decode":
-        case "encode":
-            convert(args[2], args);
-            break;
+switch (args.command) {
+    case "decode":
+    case "encode":
+        convert(args.command, args);
+        break;
 
-        case "compile":
-            exec("make -C "  + binSdk, exec_cb(args[2] + "-1", function() {
-                if (!fs.existsSync(sdk)) return;
-                exec("make -C " + sdk, exec_cb(args[2] + "-2"));
-            }));
-            break;
+    case "compile":
+        exec("make -C "  + binSdk, exec_cb(args.command + "-1", function() {
+            if (!fs.existsSync(sdk)) return;
+            exec("make -C " + sdk, exec_cb(args.command + "-2"));
+        }));
+        break;
 
-        case "clean":
-            exec("make -C "  + binSdk + " clean", exec_cb(args[2] + "-1", function() {
-                if (!fs.existsSync(sdk)) return;
-                exec("make -C " + sdk + " clean", exec_cb(args[2] + "-2"));
-            }));
-            break;
+    case "clean":
+        exec("make -C "  + binSdk + " clean", exec_cb(args.command + "-1", function() {
+            if (!fs.existsSync(sdk)) return;
+            exec("make -C " + sdk + " clean", exec_cb(args.command + "-2"));
+        }));
+        break;
 
-        default:
-            help();
-    }
+    default:
+        help();
 }
 
+
+
 function convert(type, args) {
-    if (args.length < 6) {
-        help();
-    } else {
-        var wxVoice = new WxVoice();
-        wxVoice.on("error", (err) => {
-            console.log(cmdName + cmdError + err);
+    if (args.input && args.output) {
+        var options = {};
+        ["format", "bitrate", "frequency", "channels"].forEach((key) => {
+            if (args[key])
+                options[key] = args[key];
         });
-        wxVoice[type](args[3], args[4], { format: args[5] }, convert_cb(type));
+
+        var wxVoice = new WxVoice();
+        wxVoice.on("error", (err) => console.log(cmdName + cmdError + err));
+        wxVoice[type](args.input, args.output, options, convert_cb(type));
+    } else {
+        help();
     }
 }
 
@@ -110,13 +122,21 @@ function loading(type) {
 }
 
 function help() {
-    console.log("Usage: wx-voice <mode> <input> <output> <format>\n")
-    console.log("Mode:")
+    console.log("| wxVoice by AngYC | v0.2.0 |");
+    console.log("Usage: wx-voice <command> <options>\n");
+    console.log("Command:");
     console.log("  decode    decode to general audio format");
-    console.log("  encode    encode from general audio format")
+    console.log("  encode    encode from general audio format");
     console.log("  compile   compile wx-voice library");
     console.log("  clean     remove compiled library\n");
+    console.log("Options:");
+    console.log("  -i <input>    input file path");
+    console.log("  -o <output>   output file path");
+    console.log("  -f <format>   format of the output file");
+    console.log("  --bitrate     bitrate of the output file");
+    console.log("  --frequency   frequency of the output file");
+    console.log("  --channels    channels of the output file\n");
     console.log("Tested format:");
-    console.log("  decode    mp3, m4a, wav");
-    console.log("  encode    silk, silk_amr, webm");
+    console.log("  decode   mp3, m4a, wav");
+    console.log("  encode   silk, silk_amr, webm");
 }

@@ -1,6 +1,6 @@
 {
   "name": "wx-voice",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Convert audio files between Tencent apps (Weixin / Wechat, QQ) and Silk codec with other general format such as MP3 and M4A",
   "keywords": ["wechat", "weixin", "mini", "program", "silk", "slk", "convert", "converter", "decode", "decoder", "encode", "encoder"],
   "main": "index.js",
@@ -11,11 +11,12 @@
     "wx-voice": "./bin.js"
   },
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/Ang-YC/wx-voice.git"
+    "type": "git",
+    "url": "https://github.com/Ang-YC/wx-voice.git"
   },
   "dependencies": {
     "cli-spinner": "^0.2.6",
+    "command-line-args": "^4.0.7",
     "fluent-ffmpeg": "^2.1.2",
     "randomatic": "^1.1.7",
     "read-chunk": "^2.1.0",

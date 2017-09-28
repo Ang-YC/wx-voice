@@ -17,11 +17,29 @@ $ wx-voice compile
 
 
 ## CLI 使用方法
-`wx-voice <de/encode> <input> <output> <output_format>`
+`wx-voice <command> <options>`
 ```
-# 例子：
-$ wx-voice decode input.silk output.mp3 mp3
-$ wx-voice encode input.mp3 output.silk silk
+例子：
+$ wx-voice decode -i input.silk -o output.mp3 -f mp3
+$ wx-voice encode -i input.mp3 -o output.silk -f silk
+```
+
+
+## CLI 参数
+```
+Command:
+  decode    解码 silk 或 webm 去其他格式
+  encode    编码其他格式至 silk 或 webm
+  compile   编制 wx-voice（必须在每次更新及安装时执行）
+  clean     清除已编制的 wx-voice
+
+Options:
+  -i <input>    输入的音频文件路径
+  -o <output>   输出的音频文件路径
+  -f <format>   输出的格式
+  --bitrate     输出的比特率
+  --frequency   输出的频率
+  --channels    输出的通道数
 ```
 
 
@@ -63,7 +81,7 @@ voice.decode(
 | --------- | ---------------- |
 | input     | 输入的音频文件路径  |
 | output    | 输出的音频文件路径  |
-| options   | Javascript object<br/>**format**: 输出的格式 (silk, webm, mp3, m4a...)，默认从 `output` 的扩展名提取 |
+| options   | 设置参数 (Object), 详见 [设置](#options) |
 | callback  | 回调，如果成功将输出 `output`，失败则输出 `undefined` |
 ```js
 voice.encode(
@@ -85,6 +103,17 @@ voice.encode(
 voice.encode("output.mp3", (dur) => console.log(dur));
 // 输出: "10.290"
 ```
+
+
+### Options
+Javascript Object，用来设置输出的参数
+
+| 参数       | 说明 |
+| --------- | ---- |
+| format    | 输出的格式 (silk, webm, mp3, m4a...)，默认从 `output` 的扩展名提取 |
+| bitrate   | 输出的比特率，以 bps 为单位 |
+| frequency | 输出的频率，以 Hz 为单位    |
+| channels  | 输出的通道数，默认为单通道   |
 
 
 ## 支持格式

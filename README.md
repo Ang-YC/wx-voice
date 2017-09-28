@@ -17,11 +17,29 @@ $ wx-voice compile
 
 
 ## CLI Usage
-`wx-voice <de/encode> <input> <output> <output_format>`
+`wx-voice <command> <options>`
 ```
-# Example:
-$ wx-voice decode input.silk output.mp3 mp3
-$ wx-voice encode input.mp3 output.silk silk
+Example:
+$ wx-voice decode -i input.silk -o output.mp3 -f mp3
+$ wx-voice encode -i input.mp3 -o output.silk -f silk
+```
+
+
+## CLI
+```
+Command:
+  decode    decode to general audio format
+  encode    encode from general audio format
+  compile   compile wx-voice library
+  clean     remove compiled library
+
+Options:
+  -i <input>    input file path
+  -o <output>   output file path
+  -f <format>   format of the output file
+  --bitrate     bitrate of the output file
+  --frequency   frequency of the output file
+  --channels    channels of the output file
 ```
 
 
@@ -63,7 +81,7 @@ Encode the audio to silk/webm format
 | --------- | ------------------ |
 | input     | Input audio path   |
 | output    | Output audio path  |
-| options   | Javascript object<br/>**format**: format to be encoded/decoded (silk, webm, mp3, m4a...), if not specified will parse from output |
+| options   | Output options (JS Object), see [Options](#options) |
 | callback  | Callback with `output` as parameter when decode success, `undefined` otherwise |
 ```js
 voice.encode(
@@ -85,6 +103,17 @@ Get the duration of the audio file
 voice.encode("output.mp3", (dur) => console.log(dur));
 // Output: "10.290"
 ```
+
+
+### Options
+Javascript Object to set options for the output file
+
+| Parameter | Description |
+| --------- | ----------- |
+| format    | Format to be encoded/decoded (silk, webm, mp3, m4a...), default parse from output |
+| bitrate   | Bitrate of the output, bps unit  |
+| frequency | Frequency of the output, Hz unit |
+| channels  | Channels of the output, default to 1 |
 
 
 ## File types

@@ -238,7 +238,7 @@ int main( int argc, char* argv[] )
     /* Add Silk header to stream */
     {
         static const char Tencent_amr_header[] = "#!AMR\n";
-        static const char Tencent_header[] = {0x02};
+        static const char Tencent_header[] = "\x02";
         static const char Silk_header[] = "#!SILK_V3";
 
         if (tencent_amr)
