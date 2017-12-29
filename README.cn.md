@@ -117,7 +117,8 @@ Javascript Object，用来设置输出的参数
 
 
 ## 支持格式
-已测试的格式为：`silk`, `silk_amr`, `webm`, `mp3`, `m4a`, `wav`
+**解码:** `mp3`, `m4a`, `wav`, `pcm` 已测试  
+**编码:** `silk`, `silk_amr`, `webm` 已测试
 
 
 ## Todo

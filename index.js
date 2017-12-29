@@ -74,13 +74,28 @@ class WxVoice extends EventEmitter {
         // Check if file is silk, webm or others
         if (fileFormat && fileFormat.mime == "audio/silk") {
 
+            // Default frequency
+            var outputPCM     = (options.format == "pcm"),
+                silkFrequency = (outputPCM && options.frequency) ? options.frequency : 24000;
+
             // Use Silk if it can be decoded
-            this._decodeSilk(input, (tempFile) => {
+            this._decodeSilk(input, silkFrequency, (tempFile) => {
                 input = tempFile || input;
-                this._convert(tempFile != undefined, false, input, output, options, (res) => {
-                    this._deleteTempFile(tempFile);
-                    callback(res);
-                });
+                
+                // Output raw PCM directly
+                if (outputPCM && tempFile) {
+                    copy(tempFile, output, (err) => {
+                        this._deleteTempFile(tempFile);
+                        callback(err ? undefined : output);
+                    });
+                
+                // Else Continue for other formats
+                } else {
+                    this._convert(tempFile != undefined, false, input, output, options, (res) => {
+                        this._deleteTempFile(tempFile);
+                        callback(res);
+                    });
+                }
             });
 
         } else {
@@ -212,6 +227,8 @@ class WxVoice extends EventEmitter {
         // Format dependent
         if (format == "m4a") {
             ffmpeg = ffmpeg.audioCodec("aac");
+        } else if (format == "pcm") {
+            ffmpeg = ffmpeg.format("s16le");
         } else {
             ffmpeg = ffmpeg.format(format);
         }
@@ -237,9 +254,9 @@ class WxVoice extends EventEmitter {
     }
 
 
-    _decodeSilk(input, callback) {
+    _decodeSilk(input, frequency, callback) {
         var output  = this._getTempFile(input + ".pcm"),
-            decoder = spawn(this._getSilkSDK("decoder"), [input, output]);
+            decoder = spawn(this._getSilkSDK("decoder"), [input, output, "-Fs_API", frequency]);
 
         // Allow it to output
         decoder.stdout.on('data', (data) => { });
@@ -302,16 +319,9 @@ class WxVoice extends EventEmitter {
         }
 
         // Write to file
-        fs.open(output, 'w', (err, fd) => {
+        fs.writeFile(output, buffer, (err) => {
             if (err) return callback();
-
-            fs.write(fd, buffer, (err) => {
-                if (err) return callback();
-
-                fs.close(fd, () => {
-                    callback(output);
-                });
-            });
+            callback(output);
         });
     }
 
@@ -319,13 +329,12 @@ class WxVoice extends EventEmitter {
     _encodeWebM(input, output, callback) {
         var uri = "";
 
-        fs.readFile(input, function(err, data) {
+        fs.readFile(input, (err, data) => {
             if (err) return callback();
-
             uri = dataUri.encode(data, "audio/webm");
 
             // Write to file
-            fs.writeFile(output, uri, function(err) {
+            fs.writeFile(output, uri, (err) => {
                 if (err) return callback();
                 callback(output);
             }); 
@@ -438,6 +447,25 @@ function isFunction(f) {
 
 function validateFunction(f) {
     return (isFunction(f) ? f : function() { });
+}
+
+function copy(source, target, callback) {
+    var completed = false;
+
+    var rd = fs.createReadStream(source);
+    var wr = fs.createWriteStream(target);
+
+    rd.on("error", done);
+    wr.on("error", done);
+    wr.on("close", (ex) => { done(); });
+    rd.pipe(wr);
+
+    function done(err) {
+        if (!completed) {
+            completed = true;
+            callback(err);
+        }
+    }
 }
 
 

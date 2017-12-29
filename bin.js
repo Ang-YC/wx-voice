@@ -122,7 +122,7 @@ function loading(type) {
 }
 
 function help() {
-    console.log("| wxVoice by AngYC | v0.2.0 |");
+    console.log("| wxVoice by AngYC | v0.2.1 |");
     console.log("Usage: wx-voice <command> <options>\n");
     console.log("Command:");
     console.log("  decode    decode to general audio format");
@@ -137,6 +137,6 @@ function help() {
     console.log("  --frequency   frequency of the output file");
     console.log("  --channels    channels of the output file\n");
     console.log("Tested format:");
-    console.log("  decode   mp3, m4a, wav");
+    console.log("  decode   mp3, m4a, wav, pcm");
     console.log("  encode   silk, silk_amr, webm");
 }

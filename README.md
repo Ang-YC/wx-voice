@@ -117,7 +117,8 @@ Javascript Object to set options for the output file
 
 
 ## File types
-Tested on `silk`, `silk_amr`, `webm`, `mp3`, `m4a`, `wav`
+**Decode:** Tested on `mp3`, `m4a`, `wav`, `pcm`  
+**Encode:** Tested on `silk`, `silk_amr`, `webm`
 
 
 ## Todo
